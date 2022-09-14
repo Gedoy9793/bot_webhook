@@ -2,6 +2,10 @@ from flask import Flask, request
 from .bot import Bot
 from . import settings
 
+bot = Bot()
+bot.schedule(settings.URL, settings.VERIFY, settings.BOT)
+bot.start()
+
 app = Flask(__name__)
 
 @app.route('/webhook/github', methods=['POST'])
@@ -9,7 +13,6 @@ def github():
     event = request.headers.get('X-GitHub-Event')
     if event == 'ping':
         data = request.get_json()
-        bot = Bot()
         bot.send({
         "sessionKey": bot.session,
             "target":settings.QQ_GROUP,
@@ -21,7 +24,6 @@ def github():
 
     if event == 'push':
         data = request.get_json()
-        bot = Bot()
         bot.send({
         "sessionKey": bot.session,
             "target":settings.QQ_GROUP,
