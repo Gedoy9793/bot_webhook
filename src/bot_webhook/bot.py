@@ -17,6 +17,10 @@ class Bot:
             _bots[name] = obj
             return obj
 
+    def __init__(self) -> None:
+        self._send_list = []
+        self._send_list_semaphore = asyncio.Semaphore(value=0)
+
     def schedule(self, url, verify, qq, syncId=0):
         self.url = url
         self.verify = verify
@@ -46,7 +50,7 @@ class Bot:
     async def connect(self):
         self.websocket = await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}")
         print("connected")
-        await asyncio.wait([self._recv()])
+        await asyncio.wait([self._recv(), self._send()])
 
     async def _recv(self):
         self.session = json.loads(await self.websocket.recv()).get('data').get('session')
@@ -54,10 +58,22 @@ class Bot:
             recv = json.loads(await self.websocket.recv())
             getHook(recv['data']['type'])(self, recv['data'])
 
+    async def _send(self):
+        while True:
+            await self._send_list_semaphore.acquire()
+            data = self._send_list.pop(0)
+            await self.websocket.send(json.dumps({
+                'syncId': data['syncId'],
+                'command': data['command'],
+                'subCommand': data['subCommand'],
+                'content': data['content']
+            }))
+
     def send(self, data, cmd, scmd=None):
-        self.websocket.send(json.dumps({
+        self._send_list.append({
             'syncId': self.syncId,
             'command': cmd,
             'subCommand': scmd,
             'content': data
-        }))
+        })
+        self._send_list_semaphore.release()
