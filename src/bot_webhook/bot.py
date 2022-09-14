@@ -66,10 +66,12 @@ class Bot:
             await self.websocket.send(json.dumps(data))
 
     def send(self, data, cmd, scmd=None):
-        self._send_list.append({
+        send_data = {
             'syncId': self.syncId,
             'command': cmd,
             'subCommand': scmd,
             'content': data
-        })
+        }
+        print(send_data)
+        self._send_list.append(send_data)
         self._send_list_semaphore.release()
