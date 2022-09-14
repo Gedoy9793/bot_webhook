@@ -33,3 +33,5 @@ def github():
                 { "type":"Plain", "text":f"author: {data.get('head_commit').get('author').get('name')}\n" },
             ]
         }, 'sendGroupMessage')
+
+    return "OK"
