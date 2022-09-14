@@ -6,6 +6,7 @@ app = Flask(__name__)
 @app.route('/webhook/github', methods=['POST'])
 def github():
     data = request.get_json()
+    print(data)
     bot = Bot()
     bot.send({
     "sessionKey": bot.session,
