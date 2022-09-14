@@ -54,6 +54,7 @@ class Bot:
 
     async def _recv(self):
         self.session = json.loads(await self.websocket.recv()).get('data').get('session')
+        print(self.session)
         while True:
             recv = json.loads(await self.websocket.recv())
             getHook(recv['data']['type'])(self, recv['data'])

@@ -17,8 +17,7 @@ def github():
         "sessionKey": bot.session,
             "target":settings.QQ_GROUP,
             "messageChain":[
-                { "type":"Plain", "text":f"GitHub Webhook set at {data.get('repository').get('name')}\n" },
-                { "type":"Plain", "text":f"ref: {data.get('ref')}\n" },
+                { "type":"Plain", "text":f"GitHub Webhook set at {data.get('repository').get('name')}" },
             ]
         }, 'sendGroupMessage')
 
@@ -32,7 +31,7 @@ def github():
                 { "type":"Plain", "text":f"ref: {data.get('ref')}\n" },
                 { "type":"Plain", "text":f"commit: {data.get('head_commit').get('id')[-8:]}\n" },
                 { "type":"Plain", "text":f"message: {data.get('head_commit').get('message')}\n" },
-                { "type":"Plain", "text":f"author: {data.get('head_commit').get('author').get('name')}\n" },
+                { "type":"Plain", "text":f"author: {data.get('head_commit').get('author').get('name')}" },
             ]
         }, 'sendGroupMessage')
 
