@@ -62,12 +62,8 @@ class Bot:
         while True:
             await self._send_list_semaphore.acquire()
             data = self._send_list.pop(0)
-            await self.websocket.send(json.dumps({
-                'syncId': data['syncId'],
-                'command': data['command'],
-                'subCommand': data['subCommand'],
-                'content': data['content']
-            }))
+            print(data)
+            await self.websocket.send(json.dumps(data))
 
     def send(self, data, cmd, scmd=None):
         self._send_list.append({
