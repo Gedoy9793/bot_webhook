@@ -24,7 +24,7 @@ def github():
     if event == 'push':
         data = request.get_json()
         bot.send({
-        "sessionKey": bot.session,
+            "sessionKey": bot.session,
             "target":settings.QQ_GROUP,
             "messageChain":[
                 { "type":"Plain", "text":f"GitHub Push at {data.get('repository').get('name')}\n" },

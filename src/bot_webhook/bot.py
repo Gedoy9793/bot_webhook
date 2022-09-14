@@ -19,7 +19,6 @@ class Bot:
 
     def __init__(self) -> None:
         self._send_list = []
-        self._send_list_semaphore = asyncio.Semaphore(value=0)
 
     def schedule(self, url, verify, qq, syncId=0):
         self.url = url
@@ -32,6 +31,7 @@ class Bot:
 
         def live_thread():
             async def main():
+                self._send_list_semaphore = asyncio.Semaphore(value=0)
                 self.main_task = asyncio.create_task(self.connect())
                 await self.main_task
 
