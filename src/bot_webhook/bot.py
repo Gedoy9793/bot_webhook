@@ -34,7 +34,7 @@ class Bot:
             asyncio.set_event_loop(self.loop)
 
             async def main():
-                self._send_list_semaphore = asyncio.Semaphore(value=0)
+                self._send_list_semaphore = asyncio.Semaphore(value=0, loop=self.loop)
                 self.main_task = asyncio.create_task(self.connect())
                 await self.main_task
 
