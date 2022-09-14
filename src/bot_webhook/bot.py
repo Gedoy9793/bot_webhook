@@ -30,12 +30,15 @@ class Bot:
         self.main_task: asyncio.Task = None
 
         def live_thread():
+            self.loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self.loop)
+
             async def main():
                 self._send_list_semaphore = asyncio.Semaphore(value=0)
                 self.main_task = asyncio.create_task(self.connect())
                 await self.main_task
 
-            asyncio.run(main())
+            self.loop.run_until_complete(main())
             if self.main_task._exception is not None:
                 self.handler.onException(self.main_task._exception)
 
