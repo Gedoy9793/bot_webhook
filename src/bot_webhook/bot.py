@@ -34,7 +34,7 @@ class Bot:
             asyncio.set_event_loop(self.loop)
 
             async def main():
-                self._send_list_semaphore = asyncio.Semaphore(value=0, loop=self.loop)
+                self._send_list_semaphore = asyncio.Semaphore(value=0)
                 self.main_task = asyncio.create_task(self.connect())
                 await self.main_task
 
@@ -66,7 +66,6 @@ class Bot:
         while True:
             await self._send_list_semaphore.acquire()
             data = self._send_list.pop(0)
-            print(data)
             await self.websocket.send(json.dumps(data))
 
     def send(self, data, cmd, scmd=None):
@@ -76,6 +75,5 @@ class Bot:
             'subCommand': scmd,
             'content': data
         }
-        print(send_data)
         self._send_list.append(send_data)
         self._send_list_semaphore.release()
