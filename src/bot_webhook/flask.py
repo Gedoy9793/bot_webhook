@@ -47,3 +47,4 @@ commit: {data.get('GIT_COMMIT')[-7:] if data.get('GIT_COMMIT') else None}
 result: {data.get('BUILD_STATUS')}
 """
     bot.send_group_text(msg)
+    return "OK"
