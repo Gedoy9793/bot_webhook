@@ -59,7 +59,7 @@ class Bot:
     async def _connect(self):
         while True:
             try:
-                print('trying...')
+                print('connecting...')
                 self.websocket = await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}")
                 self.session = json.loads(await self.websocket.recv()).get('data').get('session')
                 self.connected.set()
