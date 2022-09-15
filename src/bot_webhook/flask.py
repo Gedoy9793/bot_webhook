@@ -6,7 +6,7 @@ bot = Bot()
 bot.schedule(settings.URL, settings.VERIFY, settings.BOT)
 bot.start()
 
-bot.send_text('gunicorn process starting...')
+# bot.send_text('gunicorn process starting...')
 
 app = Flask(__name__)
 
@@ -16,7 +16,7 @@ def github():
     if event == 'ping':
         data = request.get_json()
         msg = f"GitHub Webhook set at {data.get('repository').get('name')}"
-        bot.send_text(msg)
+        bot.send_group_text(msg)
 
     if event == 'push':
         data = request.get_json()
@@ -26,7 +26,7 @@ commit: {data.get('head_commit').get('id')[-8:]}
 message: {data.get('head_commit').get('message')}
 author: {data.get('head_commit').get('author').get('name')}
 """
-        bot.send_text(msg)
+        bot.send_group_text(msg)
 
     return "OK"
 
@@ -34,5 +34,5 @@ author: {data.get('head_commit').get('author').get('name')}
 def codesign():
     data = request.get_json()
     if data.get('event') == 'ping':
-        bot.send_text(f"CoDesign Webhook set")
+        bot.send_group_text(f"CoDesign Webhook set")
         return 'pong'

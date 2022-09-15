@@ -11,6 +11,7 @@ _bots = {}
 
 class Bot:
     session = None
+    connected = False
 
     def __new__(cls, name='defaule'):
         if name in _bots:
@@ -54,28 +55,41 @@ class Bot:
     def stop(self):
         self.main_task.cancel()
 
-    async def connect(self):
+    async def _get_connect(self):
         while True:
             try:
-                self.websocket = await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}")
+                return await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}" + (f"&sessionKey={self.session}" if self.session is not None else ""))
             except ConnectionRefusedError:
                 await asyncio.sleep(1)
-            else:
-                break
+
+    async def connect(self):
+        self.websocket = await self._get_connect()
+        self.connected = True
         await asyncio.wait([self._recv(), self._send()])
 
     async def _recv(self):
         self.session = json.loads(await self.websocket.recv()).get('data').get('session')
         while True:
-            recv = json.loads(await self.websocket.recv())
-            getHook(recv['data']['type'])(self, recv['data'])
+            try:
+                while not self.connected:
+                    await asyncio.sleep(1)
+                recv = json.loads(await self.websocket.recv())
+                if recv.get("data").get("type") is not None:
+                    print(recv)
+                    getHook(recv['data']['type'])(self, recv['data'])
+            except:
+                self.connected = False
+                self.websocket = await self._get_connect()
+                self.connected = True
 
     async def _send(self):
-        while self.session is None:
-            await asyncio.sleep(1)
         while True:
             await self._send_list_semaphore.acquire()
             data = self._send_list.pop(0)
+            while not self.connected:
+                await asyncio.sleep(1)
+            while self.session is None:
+                await asyncio.sleep(1)
             if data.get('content') is not None:
                 data['content']['sessionKey'] = self.session
             await self.websocket.send(json.dumps(data))
@@ -90,10 +104,18 @@ class Bot:
         self._send_list.append(send_data)
         self._send_list_semaphore.release()
 
-    def send_text(self, msg):
+    def send_group_text(self, msg):
         self.send({
             "target":settings.QQ_GROUP,
             "messageChain":[
                 { "type": "Plain", "text": msg },
             ]
         }, 'sendGroupMessage')
+
+    def send_text(self, qq, msg):
+        self.send({
+            "target": qq,
+            "messageChain":[
+                { "type": "Plain", "text": msg },
+            ]
+        }, 'sendFriendMessage')
