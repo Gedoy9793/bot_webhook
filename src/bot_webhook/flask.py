@@ -22,7 +22,7 @@ def github():
         data = request.get_json()
         msg = f"""GitHub Push at {data.get('repository').get('name')}
 ref: {data.get('ref')}
-commit: {data.get('head_commit').get('id')[-8:]}
+commit: {data.get('head_commit').get('id')[-7:]}
 message: {data.get('head_commit').get('message')}
 author: {data.get('head_commit').get('author').get('name')}
 """
@@ -36,3 +36,14 @@ def codesign():
     if data.get('event') == 'ping':
         bot.send_group_text(f"CoDesign Webhook set")
         return 'pong'
+
+@app.route('/webhook/jenkins', methods=['POST'])
+def jenkins():
+    data = request.get_json()
+    msg = f"""Jenkins Build at {data.get('JOB_NAME')}
+build_id: {data.get('BUILD_DISPLAY_NAME')}
+ref: {data.get('GIT_BRANCH')}
+commit: {data.get('GIT_COMMIT')[-7:]}
+result: {data.get('BUILD_STATUS')}
+"""
+    bot.send_group_text(msg)
