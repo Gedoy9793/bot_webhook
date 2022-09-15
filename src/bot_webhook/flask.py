@@ -43,7 +43,7 @@ def jenkins():
     msg = f"""Jenkins Build at {data.get('JOB_NAME')}
 build_id: {data.get('BUILD_DISPLAY_NAME')}
 ref: {data.get('GIT_BRANCH')}
-commit: {data.get('GIT_COMMIT')[-7:]}
+commit: {data.get('GIT_COMMIT')[-7:] if data.get('GIT_COMMIT') else None}
 result: {data.get('BUILD_STATUS')}
 """
     bot.send_group_text(msg)
