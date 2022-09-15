@@ -1,5 +1,6 @@
 import asyncio
 import json
+from shutil import ExecError
 from threading import Thread
 
 import websockets
@@ -11,7 +12,7 @@ _bots = {}
 
 class Bot:
     session = None
-    connected = False
+    connected: asyncio.Event
 
     def __new__(cls, name='defaule'):
         if name in _bots:
@@ -22,11 +23,10 @@ class Bot:
             return obj
 
     def __init__(self) -> None:
-        self._send_list = []
-
         self.main_task: asyncio.Task = None
         self.loop = asyncio.new_event_loop()
-        self._send_list_semaphore = asyncio.Semaphore(value=0, loop=self.loop)
+        self._send_list = asyncio.Queue(loop=self.loop)
+        self.connected = asyncio.Event(loop=self.loop)
 
         def live_thread():
             asyncio.set_event_loop(self.loop)
@@ -55,7 +55,7 @@ class Bot:
     def stop(self):
         self.main_task.cancel()
 
-    async def _get_connect(self):
+    async def _get_connect(self) -> websockets.connect:
         while True:
             try:
                 return await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}" + (f"&sessionKey={self.session}" if self.session is not None else ""))
@@ -64,32 +64,26 @@ class Bot:
 
     async def connect(self):
         self.websocket = await self._get_connect()
-        self.connected = True
+        self.session = json.loads(await self.websocket.recv()).get('data').get('session')
+        self.connected.set()
         await asyncio.wait([self._recv(), self._send()])
 
     async def _recv(self):
-        self.session = json.loads(await self.websocket.recv()).get('data').get('session')
         while True:
             try:
-                while not self.connected:
-                    await asyncio.sleep(1)
                 recv = json.loads(await self.websocket.recv())
                 if recv.get("data").get("type") is not None:
-                    print(recv)
                     getHook(recv['data']['type'])(self, recv['data'])
-            except:
-                self.connected = False
+            except websockets.exceptions.ConnectionClosedError:
+                self.connected.clear()
                 self.websocket = await self._get_connect()
-                self.connected = True
+                self.connected.set()
 
     async def _send(self):
         while True:
-            await self._send_list_semaphore.acquire()
-            data = self._send_list.pop(0)
-            while not self.connected:
-                await asyncio.sleep(1)
-            while self.session is None:
-                await asyncio.sleep(1)
+            # await self._send_list_semaphore.acquire()
+            data = await self._send_list.get()
+            await self.connected.wait()
             if data.get('content') is not None:
                 data['content']['sessionKey'] = self.session
             await self.websocket.send(json.dumps(data))
@@ -101,8 +95,7 @@ class Bot:
             'subCommand': scmd,
             'content': data
         }
-        self._send_list.append(send_data)
-        self._send_list_semaphore.release()
+        self._send_list.put_nowait(send_data)
 
     def send_group_text(self, msg):
         self.send({
