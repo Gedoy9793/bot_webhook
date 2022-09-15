@@ -76,6 +76,8 @@ class Bot:
         while True:
             await self._send_list_semaphore.acquire()
             data = self._send_list.pop(0)
+            if data.get('content') is not None:
+                data['content']['sessionKey'] = self.session
             await self.websocket.send(json.dumps(data))
 
     def send(self, data, cmd, scmd=None):
@@ -90,7 +92,6 @@ class Bot:
 
     def send_text(self, msg):
         self.send({
-            "sessionKey": self.session,
             "target":settings.QQ_GROUP,
             "messageChain":[
                 { "type": "Plain", "text": msg },
