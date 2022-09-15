@@ -3,6 +3,7 @@ import json
 from threading import Thread
 
 import websockets
+from . import settings
 
 from .hooks import getHook
 
@@ -77,3 +78,12 @@ class Bot:
         }
         self._send_list.append(send_data)
         self._send_list_semaphore.release()
+
+    def send_text(self, msg):
+        self.send({
+            "sessionKey": self.session,
+            "target":settings.QQ_GROUP,
+            "messageChain":[
+                { "type": "Plain", "text": msg },
+            ]
+        }, 'sendGroupMessage')
