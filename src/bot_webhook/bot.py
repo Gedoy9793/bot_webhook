@@ -55,7 +55,13 @@ class Bot:
         self.main_task.cancel()
 
     async def connect(self):
-        self.websocket = await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}")
+        while True:
+            try:
+                self.websocket = await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}")
+            except ConnectionRefusedError:
+                await asyncio.sleep(1)
+            else:
+                break
         await asyncio.wait([self._recv(), self._send()])
 
     async def _recv(self):
