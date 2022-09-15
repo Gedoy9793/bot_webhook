@@ -32,4 +32,5 @@ author: {data.get('head_commit').get('author').get('name')}
 def codesign():
     data = request.get_json()
     if data.get('event') == 'ping':
+        bot.send_text(f"CoDesign Webhook set")
         return 'pong'
