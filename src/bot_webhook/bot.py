@@ -10,6 +10,8 @@ from .hooks import getHook
 _bots = {}
 
 class Bot:
+    session = None
+    
     def __new__(cls, name='defaule'):
         if name in _bots:
             return _bots[name]
@@ -53,12 +55,10 @@ class Bot:
 
     async def connect(self):
         self.websocket = await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}")
-        print("connected")
         await asyncio.wait([self._recv(), self._send()])
 
     async def _recv(self):
         self.session = json.loads(await self.websocket.recv()).get('data').get('session')
-        print(self.session)
         while True:
             recv = json.loads(await self.websocket.recv())
             getHook(recv['data']['type'])(self, recv['data'])
