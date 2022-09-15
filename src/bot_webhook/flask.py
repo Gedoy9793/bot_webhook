@@ -6,6 +6,8 @@ bot = Bot()
 bot.schedule(settings.URL, settings.VERIFY, settings.BOT)
 bot.start()
 
+bot.send_text('gunicorn process starting...')
+
 app = Flask(__name__)
 
 @app.route('/webhook/github', methods=['POST'])
