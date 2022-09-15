@@ -1,6 +1,7 @@
 import asyncio
 import json
 from shutil import ExecError
+from sqlite3 import connect
 from threading import Thread
 
 import websockets
@@ -32,7 +33,7 @@ class Bot:
             asyncio.set_event_loop(self.loop)
 
             async def main():
-                self.main_task = asyncio.create_task(self.connect())
+                self.main_task = asyncio.create_task(self._start())
                 await self.main_task
 
             self.loop.run_until_complete(main())
@@ -55,29 +56,36 @@ class Bot:
     def stop(self):
         self.main_task.cancel()
 
-    async def _get_connect(self) -> websockets.connect:
+    async def _connect(self):
         while True:
             try:
-                return await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}" + (f"&sessionKey={self.session}" if self.session is not None else ""))
+                print('trying...')
+                self.websocket = await websockets.connect(f"ws://{self.url}/all?verifyKey={self.verify}&qq={self.bot}")
+                self.session = json.loads(await self.websocket.recv()).get('data').get('session')
+                self.connected.set()
+                return
             except ConnectionRefusedError:
                 await asyncio.sleep(1)
+            except Exception as e:
+                print(e)
 
-    async def connect(self):
-        self.websocket = await self._get_connect()
-        self.session = json.loads(await self.websocket.recv()).get('data').get('session')
-        self.connected.set()
+    async def _start(self):
+        await self._connect()
         await asyncio.wait([self._recv(), self._send()])
 
     async def _recv(self):
         while True:
             try:
+                await self.connected.wait()
                 recv = json.loads(await self.websocket.recv())
                 if recv.get("data").get("type") is not None:
                     getHook(recv['data']['type'])(self, recv['data'])
             except websockets.exceptions.ConnectionClosedError:
                 self.connected.clear()
-                self.websocket = await self._get_connect()
-                self.connected.set()
+                await self._connect()
+                self.send_text(settings.ADMIN_QQ, "reconnected")
+            except Exception as e:
+                print(e)
 
     async def _send(self):
         while True:
