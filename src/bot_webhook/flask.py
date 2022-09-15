@@ -22,7 +22,7 @@ def github():
         data = request.get_json()
         msg = f"""GitHub Push at {data.get('repository').get('name')}
 ref: {data.get('ref')}
-commit: {data.get('head_commit').get('id')[-7:]}
+commit: {data.get('head_commit').get('id')[:7]}
 message: {data.get('head_commit').get('message')}
 author: {data.get('head_commit').get('author').get('name')}"""
         bot.send_group_text(msg)
@@ -42,7 +42,7 @@ def jenkins():
     msg = f"""Jenkins Build at {data.get('JOB_NAME')}
 build_id: {data.get('BUILD_DISPLAY_NAME')}
 ref: {data.get('GIT_BRANCH')}
-commit: {data.get('GIT_COMMIT')[-7:] if data.get('GIT_COMMIT') else None}
+commit: {data.get('GIT_COMMIT')[:7] if data.get('GIT_COMMIT') else None}
 result: {data.get('BUILD_STATUS')}"""
     bot.send_group_text(msg)
     return "OK"
