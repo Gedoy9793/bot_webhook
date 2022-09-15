@@ -11,7 +11,7 @@ _bots = {}
 
 class Bot:
     session = None
-    
+
     def __new__(cls, name='defaule'):
         if name in _bots:
             return _bots[name]
@@ -23,21 +23,14 @@ class Bot:
     def __init__(self) -> None:
         self._send_list = []
 
-    def schedule(self, url, verify, qq, syncId=0):
-        self.url = url
-        self.verify = verify
-        self.bot = qq
-        self.syncId = syncId
-
-    def start(self):
         self.main_task: asyncio.Task = None
+        self.loop = asyncio.new_event_loop()
+        self._send_list_semaphore = asyncio.Semaphore(value=0, loop=self.loop)
 
         def live_thread():
-            self.loop = asyncio.new_event_loop()
             asyncio.set_event_loop(self.loop)
 
             async def main():
-                self._send_list_semaphore = asyncio.Semaphore(value=0)
                 self.main_task = asyncio.create_task(self.connect())
                 await self.main_task
 
@@ -47,6 +40,14 @@ class Bot:
 
         self.thread = Thread(target=live_thread)
         self.thread.setDaemon(True)
+
+    def schedule(self, url, verify, qq, syncId=0):
+        self.url = url
+        self.verify = verify
+        self.bot = qq
+        self.syncId = syncId
+
+    def start(self):
         self.thread.start()
         return self.thread
 
