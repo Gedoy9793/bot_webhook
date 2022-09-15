@@ -1,6 +1,6 @@
 import multiprocessing
 
-bind = '18002'
+bind = '0.0.0.0:18002'
 workers = multiprocessing.cpu_count() * 2 + 1
 
 loglevel = 'debug'
