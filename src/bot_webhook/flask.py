@@ -24,8 +24,7 @@ def github():
 ref: {data.get('ref')}
 commit: {data.get('head_commit').get('id')[-7:]}
 message: {data.get('head_commit').get('message')}
-author: {data.get('head_commit').get('author').get('name')}
-"""
+author: {data.get('head_commit').get('author').get('name')}"""
         bot.send_group_text(msg)
 
     return "OK"
@@ -44,7 +43,6 @@ def jenkins():
 build_id: {data.get('BUILD_DISPLAY_NAME')}
 ref: {data.get('GIT_BRANCH')}
 commit: {data.get('GIT_COMMIT')[-7:] if data.get('GIT_COMMIT') else None}
-result: {data.get('BUILD_STATUS')}
-"""
+result: {data.get('BUILD_STATUS')}"""
     bot.send_group_text(msg)
     return "OK"
