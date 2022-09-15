@@ -64,6 +64,8 @@ class Bot:
             getHook(recv['data']['type'])(self, recv['data'])
 
     async def _send(self):
+        while self.session is None:
+            await asyncio.sleep(1)
         while True:
             await self._send_list_semaphore.acquire()
             data = self._send_list.pop(0)
