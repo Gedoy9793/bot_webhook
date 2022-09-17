@@ -1,5 +1,6 @@
+import datetime
 from io import BytesIO
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, make_response
 from .bot import Bot
 from . import settings
 from .utils.ruru_weather import get_weather_image
@@ -51,7 +52,11 @@ result: {data.get('BUILD_STATUS')}"""
 
 @app.route('/ruru/weather')
 def ruru_weather():
-    out = BytesIO()
-    img = get_weather_image()
-    img.save(out, format='png')
-    return send_file(BytesIO(out.getvalue()), mimetype='image/png')
+    res = BytesIO(get_weather_image())
+
+    now = datetime.datetime.now()
+    today = datetime.datetime(now.year, now.month, now.day, 0, 0, 0)
+    tomorrow = today + datetime.timedelta(days=1)
+    res = make_response(send_file(res, mimetype='image/jpeg', max_age=(tomorrow - now).seconds))
+    res.headers["Expires"] = tomorrow.strftime('%a, %d %b %Y %H:%M:%S GMT+0800 (CST)')
+    return res
