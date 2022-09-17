@@ -13,7 +13,7 @@ def _get(date: datetime.date):
     
     temperature = str(round(rand.uniform(-16, 48), 1)) + "°C"
 
-    weather = get_image(rand.choice(RESOURCE.RURU_WEATHER['weather'])).resize((100, 100), Image.ANTIALIAS)
+    weather = get_image(rand.choice(RESOURCE.RURU_WEATHER['weather'])).resize((500, 500), Image.ANTIALIAS)
 
     appropriateness = [
         rand.choice(RESOURCE.RURU_WEATHER['appropriateness']),
@@ -34,24 +34,25 @@ def _get(date: datetime.date):
         'autumn', 
         'autumn', 
         'winter'
-    ][date.month]]).resize((375, 250))
+    ][date.month]]).resize((1877, 1251))
+    # 3755 * 2502
 
-    season.paste(weather, (season.size[0] - weather.size[0] + 20, -20), weather)
+    season.paste(weather, (season.size[0] - weather.size[0] + 100, -100), weather)
 
     draw = ImageDraw.Draw(season)
 
-    font_text = ImageFont.truetype(get_file("http://bnkjbms.test.upcdn.net/font/Alibaba-PuHuiTi-Bold.ttf"), size=20)
-    font_temp = ImageFont.truetype(get_file("http://bnkjbms.test.upcdn.net/font/Alibaba-PuHuiTi-Bold.ttf"), size=40)
+    font_text = ImageFont.truetype(get_file("http://bnkjbms.test.upcdn.net/font/Alibaba-PuHuiTi-Bold.ttf"), size=100)
+    font_temp = ImageFont.truetype(get_file("http://bnkjbms.test.upcdn.net/font/Alibaba-PuHuiTi-Bold.ttf"), size=200)
     
-
+    text_color = (255, 255, 255)
     shadow_color = (100, 100, 100)
 
-    draw.text((100, 100), "长颈鹿的虚拟草原天气", (255, 255, 255), font=font_text, stroke_fill=shadow_color, stroke_width=2)
+    draw.text((50, 50), "长颈鹿的虚拟草原天气", text_color, font=font_text, stroke_fill=shadow_color, stroke_width=10)
 
     temperature_size = font_temp.getsize(temperature)
-    draw.text(((season.size[0] - temperature_size[0]) / 2, (season.size[1] - temperature_size[1]) / 2), temperature, (255, 255, 255), font=font_temp, stroke_fill=shadow_color, stroke_width=2)
+    draw.text(((season.size[0] - temperature_size[0]) / 2, (season.size[1] - temperature_size[1]) / 2), temperature, text_color, font=font_temp, stroke_fill=shadow_color, stroke_width=10)
 
-    draw.text((10, season.size[1] - 30), f"今日宜：{appropriateness[0]}", (255, 255, 255), font=font_text, stroke_fill=shadow_color, stroke_width=2)
+    draw.text((50, season.size[1] - 150), f"今日宜：{appropriateness[0]}", text_color, font=font_text, stroke_fill=shadow_color, stroke_width=10)
 
     return season
 

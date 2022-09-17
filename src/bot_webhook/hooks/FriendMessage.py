@@ -16,9 +16,9 @@ def hook(bot, data):
                     flow = BytesIO()
                     img.save(flow, format='png')
                     bot.send({
-                        "target":settings.QQ_GROUP,
+                        "target":settings.ADMIN_QQ,
                         "messageChain":[
                             { "type": "Image", "url": "http://106.52.73.51:18002/ruru/weather" },
                         ]
-                    }, 'sendGroupMessage')
+                    }, 'sendFriendMessage')
                     return
