@@ -4,7 +4,7 @@ from .. import settings
 from ..utils.ruru_weather import get_weather_image
 
 def hook(bot, data):
-    qq = data.get('sender').get('id')
+    qq = data.get('sender').get('group').get('id')
     if str(qq) == settings.QQ_GROUP:
         for msg in data.get('messageChain'):
             if msg.get('type') == 'Plain':
