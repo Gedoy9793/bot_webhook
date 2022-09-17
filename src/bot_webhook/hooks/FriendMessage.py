@@ -12,9 +12,6 @@ def hook(bot, data):
                     bot.send_text(settings.ADMIN_QQ, 'pong')
                     return
                 if msg.get('text') == '天气':
-                    img = get_weather_image()
-                    flow = BytesIO()
-                    img.save(flow, format='png')
                     bot.send({
                         "target":settings.ADMIN_QQ,
                         "messageChain":[

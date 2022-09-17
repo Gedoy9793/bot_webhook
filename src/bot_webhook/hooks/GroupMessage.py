@@ -9,9 +9,6 @@ def hook(bot, data):
         for msg in data.get('messageChain'):
             if msg.get('type') == 'Plain':
                 if msg.get('text') == '天气':
-                    img = get_weather_image()
-                    flow = BytesIO()
-                    img.save(flow, format='png')
                     bot.send({
                         "target":settings.QQ_GROUP,
                         "messageChain":[
