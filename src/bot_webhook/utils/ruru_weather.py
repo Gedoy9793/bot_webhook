@@ -9,7 +9,7 @@ from ..settings import RESOURCE
 def _get(date: datetime.date):
     print('nocache')
     rand = Random()
-    # rand.seed(date.ctime())
+    rand.seed(date.ctime())
     
     temperature = str(round(rand.uniform(-16, 48), 1)) + "°C"
 
@@ -41,7 +41,7 @@ def _get(date: datetime.date):
     draw = ImageDraw.Draw(season)
 
     font_text = ImageFont.truetype(get_file("http://bnkjbms.test.upcdn.net/font/Alibaba-PuHuiTi-Bold.ttf"), size=200)
-    font_temp = ImageFont.truetype(r"C:\Users\77367\Desktop\Alibaba-PuHuiTi-Bold.ttf", size=400)
+    font_temp = ImageFont.truetype(get_file("http://bnkjbms.test.upcdn.net/font/Alibaba-PuHuiTi-Bold.ttf"), size=400)
     
 
     shadow_color = (100, 100, 100)

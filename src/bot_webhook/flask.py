@@ -6,7 +6,7 @@ from .utils.ruru_weather import get_weather_image
 
 bot = Bot()
 bot.schedule(settings.URL, settings.VERIFY, settings.BOT)
-# bot.start()
+bot.start()
 
 app = Flask(__name__)
 

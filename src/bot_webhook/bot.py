@@ -1,7 +1,5 @@
 import asyncio
 import json
-from shutil import ExecError
-from sqlite3 import connect
 from threading import Thread
 
 import websockets
