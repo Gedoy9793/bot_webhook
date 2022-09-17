@@ -18,7 +18,7 @@ def hook(bot, data):
                     bot.send({
                         "target":settings.QQ_GROUP,
                         "messageChain":[
-                            { "type": "Image", "url": "http://106.52.73.51/ruru/weather" },
+                            { "type": "Image", "url": "http://106.52.73.51:18002/ruru/weather" },
                         ]
                     }, 'sendGroupMessage')
                     return
