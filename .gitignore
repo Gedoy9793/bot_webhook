@@ -1,4 +1,6 @@
-.env
-.venv
-__pycache__
-.pdm.toml
+/.env
+/.venv
+**/__pycache__
+/.pdm.toml
+/resource.py
+/log

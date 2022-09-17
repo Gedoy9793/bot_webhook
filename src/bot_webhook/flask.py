@@ -1,12 +1,12 @@
-from flask import Flask, request
+from io import BytesIO
+from flask import Flask, request, send_file
 from .bot import Bot
 from . import settings
+from .utils.ruru_weather import get_weather_image
 
 bot = Bot()
 bot.schedule(settings.URL, settings.VERIFY, settings.BOT)
-bot.start()
-
-# bot.send_text('gunicorn process starting...')
+# bot.start()
 
 app = Flask(__name__)
 
@@ -46,3 +46,12 @@ commit: {data.get('GIT_COMMIT')[:7] if data.get('GIT_COMMIT') else None}
 result: {data.get('BUILD_STATUS')}"""
     bot.send_group_text(msg)
     return "OK"
+
+
+
+@app.route('/ruru/weather')
+def ruru_weather():
+    out = BytesIO()
+    img = get_weather_image()
+    img.save(out, format='png')
+    return send_file(BytesIO(out.getvalue()), mimetype='image/png')
