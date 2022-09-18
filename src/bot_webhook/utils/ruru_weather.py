@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from .get_file import get_image, get_file
 from ..settings import RESOURCE
 
-@lru_cache(None)
+@lru_cache(1)
 def _get_weather_image(date: datetime.date):
     print('nocache')
     rand = Random()

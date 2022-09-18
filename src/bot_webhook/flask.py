@@ -50,8 +50,6 @@ result: {data.get('BUILD_STATUS')}"""
     bot.send_group_text(msg)
     return "OK"
 
-
-
 @app.route('/ruru/weather')
 def ruru_weather():
     res = BytesIO(get_weather_image())
