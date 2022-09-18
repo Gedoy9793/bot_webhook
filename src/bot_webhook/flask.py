@@ -62,8 +62,8 @@ def ruru_weather():
     res.headers["Expires"] = tomorrow.strftime('%a, %d %b %Y %H:%M:%S GMT+0800 (CST)')
     return res
 
-@app.route('/mock', methods=['GET', 'POST'])
-def mock():
+@app.route('/redirect', methods=['GET', 'POST'])
+def redirect():
     headers = dict(request.headers)
     headers.pop('Host')
     res =  requests.request(method=request.method, url=request.values.get('url'), data=request.data, headers=headers)
