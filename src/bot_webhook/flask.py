@@ -2,6 +2,7 @@ import datetime
 import requests
 from io import BytesIO
 from flask import Flask, request, send_file, make_response
+from flask_cors import cross_origin
 from .bot import Bot
 from . import settings
 from .utils.ruru_weather import get_weather_image
@@ -63,10 +64,9 @@ def ruru_weather():
     return res
 
 @app.route('/redirect', methods=['GET', 'POST'])
+@cross_origin()
 def redirect():
     headers = dict(request.headers)
     headers.pop('Host')
-    headers['Access-Control-Allow-Origin'] = '*';
-    headers['Access-Control-Allow-Methods'] = 'GET POST OPTIONS';
     res =  requests.request(method=request.method, url=request.values.get('url'), data=request.data, headers=headers)
     return res.content
