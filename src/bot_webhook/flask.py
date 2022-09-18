@@ -66,5 +66,7 @@ def ruru_weather():
 def redirect():
     headers = dict(request.headers)
     headers.pop('Host')
+    headers['Access-Control-Allow-Origin'] = '*';
+    headers['Access-Control-Allow-Methods'] = 'GET POST OPTIONS';
     res =  requests.request(method=request.method, url=request.values.get('url'), data=request.data, headers=headers)
     return res.content
