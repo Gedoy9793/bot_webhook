@@ -7,7 +7,7 @@ from .get_file import get_image, get_file
 from ..settings import RESOURCE
 
 @lru_cache(None)
-def _get(date: datetime.date):
+def _get_weather_image(date: datetime.date):
     print('nocache')
     rand = Random()
     rand.seed(date.ctime())
@@ -72,4 +72,4 @@ def _get(date: datetime.date):
     return res.getvalue()
 
 def get_weather_image():
-    return _get(datetime.date.today())
+    return _get_weather_image(datetime.date.today())

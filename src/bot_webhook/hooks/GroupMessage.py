@@ -1,7 +1,4 @@
-import base64
-from io import BytesIO
 from .. import settings
-from ..utils.ruru_weather import get_weather_image
 
 def hook(bot, data):
     qq = data.get('sender').get('group').get('id')

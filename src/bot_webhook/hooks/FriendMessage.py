@@ -1,7 +1,6 @@
-import base64
-from io import BytesIO
 from .. import settings
-from ..utils.ruru_weather import get_weather_image
+from ..utils.get_file import _get_file
+from ..utils.ruru_weather import _get_weather_image
 
 def hook(bot, data):
     qq = data.get('sender').get('id')
@@ -18,4 +17,10 @@ def hook(bot, data):
                             { "type": "Image", "url": "http://106.52.73.51:18002/ruru/weather" },
                         ]
                     }, 'sendFriendMessage')
+                    return
+                if msg.get('text') == 'file cache':
+                    bot.send_text(settings.ADMIN_QQ, str(_get_file.cache_info()))
+                    return
+                if msg.get('text') == 'weather cache':
+                    bot.send_text(settings.ADMIN_QQ, str(_get_weather_image.cache_info()))
                     return
