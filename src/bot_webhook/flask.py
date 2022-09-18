@@ -67,6 +67,12 @@ def ruru_weather():
 @cross_origin()
 def redirect():
     headers = dict(request.headers)
-    headers.pop('Host')
+    headers.pop('Host', None)
+    headers.pop('Origin', None)
+    headers.pop('Sec-Fetch-Site', None)
+    headers.pop('Sec-Fetch-Mode', None)
+    headers.pop('Sec-Fetch-Dest', None)
+    headers.pop('Sec-Fetch-User', None)
+
     res =  requests.request(method=request.method, url=request.values.get('url'), data=request.data, headers=headers)
     return res.content
