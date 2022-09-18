@@ -1,4 +1,5 @@
 import datetime
+import requests
 from io import BytesIO
 from flask import Flask, request, send_file, make_response
 from .bot import Bot
@@ -7,7 +8,7 @@ from .utils.ruru_weather import get_weather_image
 
 bot = Bot()
 bot.schedule(settings.URL, settings.VERIFY, settings.BOT)
-bot.start()
+# bot.start()
 
 app = Flask(__name__)
 
@@ -60,3 +61,10 @@ def ruru_weather():
     res = make_response(send_file(res, mimetype='image/jpeg', max_age=(tomorrow - now).seconds))
     res.headers["Expires"] = tomorrow.strftime('%a, %d %b %Y %H:%M:%S GMT+0800 (CST)')
     return res
+
+@app.route('/mock', methods=['GET', 'POST'])
+def mock():
+    headers = dict(request.headers)
+    headers.pop('Host')
+    res =  requests.request(method=request.method, url=request.values.get('url'), data=request.data, headers=headers)
+    return res.content
