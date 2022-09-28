@@ -1,4 +1,4 @@
-bind = '0.0.0.0:18002'
+bind = '127.0.0.1:18002'
 workers = 1
 
 loglevel = 'debug'
