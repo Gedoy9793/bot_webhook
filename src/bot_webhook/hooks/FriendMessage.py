@@ -14,7 +14,7 @@ def hook(bot, data):
                     bot.send({
                         "target":settings.ADMIN_QQ,
                         "messageChain":[
-                            { "type": "Image", "url": "http://106.52.73.51:18002/ruru/weather" },
+                            { "type": "Image", "url": "https://bot.api.gedoy.cn/ruru/weather" },
                         ]
                     }, 'sendFriendMessage')
                     return
