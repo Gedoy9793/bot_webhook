@@ -83,4 +83,5 @@ def staticFileUpdate():
         msg += f"\n{path}"
     if len(data) > 8:
         msg += f"\n...(total: {len(data)})"
+    bot.send_group_text(msg)
     return "OK"
