@@ -17,3 +17,7 @@ RESOURCE_FILE = os.path.abspath(os.getenv('RESOURCE_FILE'))
 if RESOURCE_FILE:
     sys.path.append(os.path.dirname(RESOURCE_FILE))
     RESOURCE = import_module(os.path.splitext(os.path.basename(RESOURCE_FILE))[0])
+
+CDN_BASE_URL = os.getenv("CDN_BASE_URL")
+ALIYUN_ACCESS_KEY_ID = os.getenv("ALIYUN_ACCESS_KEY_ID")
+ALIYUN_ACCESS_KEY_SECRET = os.getenv("ALIYUN_ACCESS_KEY_SECRET")

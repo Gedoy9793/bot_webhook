@@ -4,3 +4,4 @@
 /.pdm.toml
 /resource.py
 /log
+/.vscode

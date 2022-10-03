@@ -3,6 +3,8 @@ import requests
 from io import BytesIO
 from flask import Flask, request, send_file, make_response
 from flask_cors import cross_origin
+
+from bot_webhook.utils.refresh_cdn import refresh
 from .bot import Bot
 from . import settings
 from .utils.ruru_weather import get_weather_image
@@ -84,4 +86,5 @@ def staticFileUpdate():
     if len(data) > 8:
         msg += f"\n...(total: {len(data)})"
     bot.send_group_text(msg)
+    refresh(data.keys())
     return "OK"
