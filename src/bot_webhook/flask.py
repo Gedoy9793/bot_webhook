@@ -77,13 +77,11 @@ def redirect():
 
 @app.route('/webhook/staticFileUpdate', methods=["POST"])
 def staticFileUpdate():
-    print(request.get_json())
     data = request.get_json().get("fileList")
     msg = "Static File Update\n"
     for path in list(data.keys())[:min(8, len(data))]:
         msg += f"\n{path} : {data[path]}"
     if len(data) > 8:
         msg += f"\n...(total: {len(data)})"
-    # bot.send_group_text(msg)
-    print(msg)
+    bot.send_group_text(msg)
     return "OK"
