@@ -50,6 +50,8 @@ ref: {data.get('GIT_BRANCH')}
 commit: {data.get('GIT_COMMIT')[:7] if data.get('GIT_COMMIT') else None}
 result: {data.get('BUILD_STATUS')}"""
     bot.send_group_text(msg)
+    if data.get('BUILD_STATUS') != "SUCCESS":
+        bot.send_group_text("构建产物被小麂子吃了(")
     return "OK"
 
 @app.route('/ruru/weather')
