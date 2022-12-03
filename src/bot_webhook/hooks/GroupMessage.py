@@ -1,3 +1,4 @@
+import requests
 from .. import settings
 
 def hook(bot, data):
@@ -6,10 +7,11 @@ def hook(bot, data):
         for msg in data.get('messageChain'):
             if msg.get('type') == 'Plain':
                 if msg.get('text') == '天气':
+                    res = requests.get("https://api.orihararuru.club/imageGenerate/weather").json()
                     bot.send({
                         "target":settings.QQ_GROUP,
                         "messageChain":[
-                            { "type": "Image", "url": "https://bot.api.gedoy.cn/ruru/weather" },
+                            { "type": "Image", "url": "https://resource.orihararuru.club/file/upload/" + res["data"]["src"] },
                         ]
                     }, 'sendGroupMessage')
                     return
